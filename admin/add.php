@@ -12,7 +12,7 @@ require("../components/head.php");
     <div>
         <form action='../sql/controller.php' method="POST">
         <?PHP if(isset($_POST['createStudent'])){ ?>
-        <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
+            <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
 
                 <b>Student Number</b>
                 <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='studno' placeholder='Enter Student Number' required>
@@ -35,14 +35,79 @@ require("../components/head.php");
                 ?>
             <input type="submit" name="add" class="form-control fw-bolder bg-success text-light" value="Save Changes">
             <a href='student.php' type='button' class='form-control bg-dark btn fw-bolder text-light'>Cancel</a> 
-        <?PHP }else if(isset($_POST['createCourse'])){ ?>
-        <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
+            <?PHP }else if(isset($_POST['createCourse'])){ ?>
+            <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
             <b>Course Code</b>
             <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='code' value='' placeholder="Enter Course Code" required>
             <b>Course Name</b>
             <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='name' value='' placeholder="Enter Course Name" required>
             <input type="submit" name="add" class="form-control fw-bolder bg-success text-light" value="Save Changes">
             <a href='courses.php' type='button' class='form-control bg-dark btn fw-bolder text-light'>Cancel</a>    
+        <?PHP }else if(isset($_POST['createSemester'])){?>
+            <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
+            <b>Semester Code</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='semester_code' value='' placeholder="Enter Semester Code" required>
+            <b>Start Date</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='date' name='start_date' value='' required>
+            <b>End Date</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='date' name='end_date' value='' required>
+            <b>Type</b>
+            <select class='form-select mx-3 border-0 rounded-0 border-dark text-dark border-bottom mb-5' name='type' required>
+                <option value="Regular">Regular</option>
+                <option value="Summer">Summer</option>
+            </select>
+            <input type="submit" name="add" class="form-control fw-bolder bg-success text-light" value="Save Changes">
+            <a href='semester.php' type='button' class='form-control bg-dark btn fw-bolder text-light'>Cancel</a>   
+        <?PHP }else if(isset($_POST['createTeacher'])){?>
+            <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
+            <b>Teacher Code</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='teacher_code' value='' placeholder="Enter Teacher Code" required>
+            <b>Name</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='name' value='' placeholder="Enter Name" required>
+            <b>Gender</b>
+            <select class='form-select mx-3 border-0 rounded-0 border-dark text-dark border-bottom mb-5' name='gender' required>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+            <input type="submit" name="add" class="form-control fw-bolder bg-success text-light" value="Save Changes">
+            <a href='teacher.php' type='button' class='form-control bg-dark btn fw-bolder text-light'>Cancel</a>
+        <?PHP }else if(isset($_POST['createSubject'])){?>
+            <h1 class="fw-bolder mb-5">CREATE NEW DATA</h1>
+            <b>Subject Code</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='subject_code' value='' placeholder="Enter Subject Code" required>
+            <b>Description</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='description' value='' placeholder="Enter Subject Description" required>
+            <b>Day</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='day' value='' placeholder="MW, TTH, F, S, etc " required>
+            <b>Start Time</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='time' name='start_time' value='' required>
+            </select>
+            <b>End Time</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='time' name='end_time' value='' required>
+            <b>Room</b>
+            <select class='form-select mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' name='room_id' required>
+            <?PHP 
+            $rooms = $conn->query("SELECT * FROM rooms");
+            while($room=$rooms->fetch_assoc()){
+                echo "<option value='$room[id]'>$room[name]</option>";
+            }
+            echo "</select>";
+            ?>
+            <b>Teacher</b>
+            <select class='form-select mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' name='teacher_id' required>
+            <?PHP 
+            $teachers = $conn->query("SELECT * FROM teachers");
+            while($teacher=$teachers->fetch_assoc()){
+                echo "<option value='$teacher[id]'>$teacher[teacher_code] - $teacher[name]</option>";
+            }
+            echo "</select>";
+            ?>
+            <b>Unit Price</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='number' name='price_unit' placeholder="Enter Price per Unit in Peso" value='' required>
+            <b>Total Unit</b>
+            <input class='form-control mx-3 border-0 rounded-0 border-dark text-secondary border-bottom mb-5' type='text' name='unit' value='' placeholder="Enter Number of Unit" required>
+            <input type="submit" name="add" class="form-control fw-bolder bg-success text-light" value="Save Changes">
+            <a href='subject.php' type='button' class='form-control bg-dark btn fw-bolder text-light'>Cancel</a>   
         <?PHP }?>
         </form>
         <?php if (isset($_POST['createGrade'])): ?>

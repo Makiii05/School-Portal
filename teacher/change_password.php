@@ -1,6 +1,6 @@
 <?php
 require("../conn.php");
-require("../sql/check_student.php");
+require("../sql/check_teacher.php");
 if (isset($_POST['change_password'])) {
     $old_pass_raw = $_POST['old_pass'] ?? '';
     $new_pass_raw = $_POST['new_pass'] ?? '';
@@ -15,8 +15,8 @@ if (isset($_POST['change_password'])) {
     $message_state = "";
 
     $stmt = $conn->prepare("SELECT pass FROM users WHERE user = ? AND role = ?");
-    $role = "Student";
-    $stmt->bind_param("ss", $_SESSION['user_name'], $role);
+    $role = "Teacher";
+    $stmt->bind_param("ss", $_SESSION['user_code'], $role);
     $stmt->execute();
     $stmt->store_result();
 
@@ -38,7 +38,7 @@ if (isset($_POST['change_password'])) {
             $message_state = "Error";
         } else {
             $update = $conn->prepare("UPDATE users SET pass = ? WHERE user = ? AND role = ?");
-            $update->bind_param("sss", $new_pass, $_SESSION['user_name'], $role);
+            $update->bind_param("sss", $new_pass, $_SESSION['user_code'], $role);
             $update->execute();
 
             $message = "Successfully changed password.";

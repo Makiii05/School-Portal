@@ -57,6 +57,7 @@ $pdf->SetFont('Times', '', 14);
 $pdf->Cell(195, 8, "OFFICIAL ENROLLMENT AND ASSESSMENT FORM", 1, 1, 'C');
 //body - desc
 $pdf->SetFont('Arial', '', 10);
+$student_no;
 while($row=$student_info->fetch_assoc()){
     $pdf->Cell(10, 10, "", 0, 0, 'L');
     $pdf->Cell(60, 10, "Student #:  $row[number]", 0, 0, 'L');
@@ -67,6 +68,7 @@ while($row=$student_info->fetch_assoc()){
     }
     $pdf->Cell(10, 10, "", 0, 0, 'L');
     $pdf->Cell(180, 10, "Course:  $row[course]", 0, 1, 'L');
+    $student_no = $row['number'];
 }
 $pdf->SetFont('Arial', '', 9);
 $sub_no = 1;
@@ -93,12 +95,31 @@ $pdf->Cell(15, 8, "$row[unit]", 1,0, 'C');
 $price_unit = $row['unit'] * $row['price'];
 $pdf->Cell(15, 8, "P$price_unit", 1,1, 'C');
 $total_unit += $row['unit'];
-$total_price += $row['price'];
+$total_price += $price_unit;
 $sub_no++;
 }
+$pdf->SetFont('Arial', 'B', 9);
 $pdf->Cell(165, 8, "", 0,0, 'C');
 $pdf->Cell(15, 8, "$total_unit", 0,0, 'C');
 $pdf->Cell(15, 8, "P$total_price", 0,1, 'C');
+$pdf->SetFont('Arial', '', 9);
+$pdf->Cell(195, 40, "", 0,1, 'C');
+$pdf->Cell(195, 8, "Student Portal: https://sulfitic-undancing-jaiden.ngrok-free.dev/Lina/student-portal/auth/signin.php", 0,1, 'L');
+$pdf->Cell(5, 8, "", 0,0, 'C');
+$pdf->Cell(185, 8, "Username: $student_no", 0,1, 'L');
+$pdf->Cell(5, 8, "", 0,0, 'C');
+$pdf->Cell(185, 8, "Default Password: 123", 0,1, 'L');
+$pdf->SetFont('Arial', 'I', 9);
+$pdf->Cell(5, 8, "", 0,0, 'C');
+$pdf->Cell(185, 8, "(Check student portal to view your account ledger.)", 0,1, 'L');
+$pdf->Cell(195, 60, "",0,1, 'C');
+$pdf->Cell(18, 2, "", 0,0, 'C');
+$pdf->Cell(65, .1, "", 1,0, 'C');
+$pdf->Cell(30, 1, "", 0,0, 'C');
+$pdf->Cell(65, .1, "", 1,0, 'C');
+$pdf->Cell(21.67, 2, "", 0,1, 'C');
+$pdf->Cell(97.5, 8, "Registrar", 0,0, 'C');
+$pdf->Cell(97.5, 8, "Cashier", 0,1, 'C');
 
 $pdf->Output();
 ob_end_flush();

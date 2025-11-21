@@ -27,7 +27,9 @@ if(isset($_POST['student_no'])){
         sub.unit AS unit,
         ss.student_id AS studid,
         ss.subject_id AS subid,
-        ss.semester_id AS semid
+        ss.semester_id AS semid,
+        ss.midterm AS midterm,
+        ss.fcg AS fcg
         FROM student_subjects ss
         JOIN subjects sub ON ss.subject_id=sub.subject_id
         JOIN students s ON ss.student_id=s.student_id
@@ -53,7 +55,16 @@ if(isset($_POST['student_no'])){
         $subid = $_POST['subject_id'];
         $semid = $_POST['semester_id'];
 
-        $delete = $conn->query("DELETE FROM student_subjects WHERE student_id = $studid AND subject_id = $subid AND semester_id = $semid");
+        
+        $checkIfExisting = $conn->query("SELECT * FROM student_subjects WHERE student_id = $studid AND subject_id = $subid AND semester_id = $semid");
+        while($row=$checkIfExisting->fetch_assoc()){
+            if(!empty($row['midterm'])){
+            }else if(!empty($row['fcg'])){
+            }else{
+                $delete = $conn->query("DELETE FROM student_subjects WHERE student_id = $studid AND subject_id = $subid AND semester_id = $semid");
+            }
+        }
+        
     }
     $result=$conn->query($sql);
     if(mysqli_num_rows($student_info) != 1){
@@ -103,7 +114,10 @@ require("../components/head.php");
                     <h5>Student # </h5>
                     <div class="d-flex gap-2">
                         <form action="enroll.php" method="POST" id="stud_no_form">
-                            <input type="number" id="stud_no_input" class="mx-3 form-control" name="student_no" value="<?PHP echo isset($_POST['student_no']) ? $_POST['student_no'] : "" ?>">
+                            <input autofocus type="number" id="stud_no_input" class="mx-3 form-control" name="student_no" value="<?PHP echo isset($_POST['student_no']) ? $_POST['student_no'] : "" ?>" required>
+                        </form>
+                        <form action="enroll.php?error=1" method="POST" id="error_delete_form">
+                            <input type="hidden" id="stud_no_input" class="mx-3 form-control" name="student_no" value="<?PHP echo isset($_POST['student_no']) ? $_POST['student_no'] : "" ?>">
                         </form>
                         <button type="button" class="btn btn-dark ms-3" data-bs-toggle="modal" data-bs-target="#searchModal">
                             <i class="bi bi-search"></i>
@@ -147,12 +161,17 @@ require("../components/head.php");
                                 <th scope="col">Teacher</th>
                                 <th scope="col">Unit</th>
                                 <th scope="col">Semester</th>
-                                <th scope="col"></th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?PHP
                             while($row=$result->fetch_assoc()){
+                                if(!empty($row['midterm']) || !empty($row["fcg"]) ){
+                                    $delete_status = "error=5";
+                                }else{
+                                    $delete_status = "success=3";
+                                }
                                 echo "<tr>
                                     <td>$row[code]</td>
                                     <td>$row[des]</td>
@@ -163,12 +182,12 @@ require("../components/head.php");
                                     <td>$row[unit]</td>
                                     <td>$row[semid]</td>
                                     <td>
-                                        <form action='enroll.php?success=3' method='POST' class='d-flex mx-4 gap-3'>
+                                        <form action='enroll.php?$delete_status' method='POST' class='d-flex mx-4 gap-3'>
                                             <input type='hidden' name='student_no' value=$_POST[student_no]>
                                             <input type='hidden' name='student_id' value=$student_id>
                                             <input type='hidden' name='subject_id' value=$row[subid]>
                                             <input type='hidden' name='semester_id' value=$row[semid]>
-                                            <input type='submit' name='delete' value='Delete' id='delete_sub_btn' class='btn border-danger text-danger' onclick='confirm(`Are you sure you want to delete this Data?`)'>
+                                            <input type='submit' name='delete' value='Delete' id='delete_sub_btn' class='btn border-danger text-danger' onclick='return confirm(`Are you sure you want to delete this Data?`)'>
                                         </form>
                                     </td>
                                 </tr>";

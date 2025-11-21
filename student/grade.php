@@ -76,7 +76,7 @@ $subjects = $conn->query("
                         <form action="grade.php" method="POST" id="semester_form">
                             <input type="hidden" name="createGrade">
                             <input type="hidden" name="student_id" value="<?= $student_id ?>">
-                            <select name="semester_id" class="form-select" id="semester_select" onchange="this.form.submit()">
+                            <select autofocus name="semester_id" class="form-select" id="semester_select" onchange="this.form.submit()">
                                 <?php
                                 $semesters = $conn->query("
                                     SELECT sem.semester_id, sem.code

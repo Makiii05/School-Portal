@@ -1,7 +1,4 @@
 <?php
-if(!$_SESSION['user_name']){
-    header("Location:auth/signin.php");
-}
 if (isset($_GET["error"])) {
     $error = $_GET["error"];
 
@@ -21,10 +18,22 @@ if (isset($_GET["error"])) {
     }elseif ($error == 4) {
         $message = "Does not exist: This student does not exist or not enrolled.";
         $class   = "warning"; // yellow
+    }elseif ($error == 5) {
+        $message = "Cannot delete: this record is being used (foreign key constraint).<br>Delete or Update to Null the Grade before deleting";
+        $class   = "warning"; // yellow
+    }elseif ($error == 6) {
+        $message = "Payment error: Select Atleast one payment method.";
+        $class   = "danger"; // yellow
+    }elseif ($error == 7) {
+        $message = "Payment error: Both payment method selected.<br>Select only one payment method.";
+        $class   = "warning"; // yellow
+    }elseif ($error == 8) {
+        $message = "Payment Error: Gcash reference number is required.";
+        $class   = "warning"; // yellow
     }
 
     echo "
-    <div class='container alert alert-$class alert-dismissible fade show position-absolute top-50 start-50 translate-middle w-25 text-center' role='alert'>
+    <div style='z-index: 1050;' class='container alert alert-$class alert-dismissible fade show position-absolute top-50 start-50 translate-middle w-25 text-center' role='alert'>
         <strong>Notice:</strong><br> $message
         <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
     </div>

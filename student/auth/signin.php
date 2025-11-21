@@ -1,12 +1,12 @@
 <?PHP
-require("../conn.php");
+require("../../conn.php");
 session_start();
 session_destroy();
 if(isset($_POST['signin'])){
     $username = $_POST['username'];
     $password = hash("MD5", $_POST['password']);
 
-    $stmt = $conn->prepare("SELECT id, user, role FROM users WHERE user = ? AND pass = ?");
+    $stmt = $conn->prepare("SELECT id, user, role FROM users WHERE user = ? AND pass = ? AND role = 'Student'");
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();
     $stmt->store_result();
@@ -21,7 +21,7 @@ if(isset($_POST['signin'])){
         $_SESSION['user_id'] = $id;
         $_SESSION['user_name'] = $user;
         $_SESSION['user_role'] = $role;
-        header("location:../index.php");
+        header("location:../../index.php");
         $stmt->close();
     } else {
         $stmt->close();
@@ -32,16 +32,17 @@ if(isset($_POST['signin'])){
 <!DOCTYPE html>
 <html lang="en">
 <?PHP 
-require("../components/head.php");
+require("../../components/head.php");
 ?>
 <body>
     <div class="container min-vh-100 d-flex align-items-center justify-content-center">
         <div class="card border-dark shadow-sm" style="width: 420px;">
             <div class="card-body p-4">
-                <h4 class="card-title text-center mb-4">Sign In</h4>
+                <h4 class="card-title text-center mb-4">Sign In For Student</h4>
                 <form action="signin.php" method="POST" autocomplete="off">
+                    <input type="hidden" id="from" name="from" value="student" class="form-control border-dark" required>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username or Student#</label>
+                        <label for="username" class="form-label">Student#</label>
                         <input type="text" id="username" name="username" class="form-control border-dark" value="<?= isset($_GET['u']) ? htmlspecialchars($_GET['u']) : '' ?>" required autofocus>
                     </div>
 

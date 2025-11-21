@@ -23,7 +23,7 @@ $gradeOptions = [
                     <!-- MIDTERM -->
                     <b>Midterm Grade</b>
                     <select name="midterm" class="form-select">
-                        <option value="">Select Grade</option>
+                        <option value="Null">Select Grade (Null)</option>
                         <?php 
                         $midtermValue = $row['midterm']; // value from DB
                         foreach ($gradeOptions as $grade):
@@ -36,7 +36,7 @@ $gradeOptions = [
                     <!-- FINAL COURSE GRADE -->
                     <b>Final Course Grade</b>
                     <select name="fcg" class="form-select">
-                        <option value="">Select Grade</option>
+                        <option value="Null">Select Grade (Null)</option>
                         <?php 
                         $fcgValue = $row['fcg']; // value from DB
                         foreach ($gradeOptions as $grade):
