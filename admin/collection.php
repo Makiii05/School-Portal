@@ -87,13 +87,17 @@ require("../components/head.php");
             <?PHP
             require("../components/sidebar.php");
             require("../components/search_modal_collection.php");
+            require("../components/audit_trail_modal.php");
             ?>
             <div class="col py-3">
                 
                 <div class="d-flex w-100">
                     <h3>Collections</h3>
-                    <div class="w-100 text-end mb-3">
+                    <div class="w-100 text-end mb-3 ">
                         <p><b>Active User:  </b><?= $_SESSION['user_name'] ?></p>
+                        <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#auditTrailModal">
+                            View Audit Trail
+                        </button>
                     </div>
                 </div>
                 <hr>
@@ -103,7 +107,7 @@ require("../components/head.php");
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     <label>Official Reciept #</label>
-                                    <input class="form-control mb-3" id="or_number" name="or_number" value="<?= $_POST["or_number"] ?? $last_OR["or_number"] + 1?>" autofocus required type="text">
+                                    <input class="form-control mb-3" id="or_number" name="or_number" value="<?= $_POST["or_number"] ?? (empty($last_OR["or_number"]) ? '00001' : sprintf('%05d', $last_OR["or_number"] + 1)) ?>" autofocus required type="text">
                                 </div>
                                 <div>
                                     <label>Date</label>
@@ -174,12 +178,18 @@ require("../components/head.php");
                                         <td>$row[student_no]</td>
                                         <td>$row[semester_code]</td>
                                         <td>$row[or_date]</td>
-                                        <td>
+                                        <td class='d-flex gap-1'>
                                             <form action='collection.php' method='POST'>
                                                 <input type='hidden' name='or_number' value='$row[or_number]'>
                                                 <button type='submit' class='btn border-dark'><i class='bi bi-pencil p-1 text-'></i></button>
                                             </form>
-                                        </td>";
+                                            <form action='../sql/controller.php' method='POST'>
+                                                <input type='hidden' name='delete' value='$row[collection_id]'>
+                                                <input type='hidden' name='from' value='collections'>
+                                                <button class='btn border-danger' type='submit' onclick='confirm(`Are you sure to delete this data?`)'><i class='bi bi-trash3 p-1 text-danger'></i></button>
+                                            </form>
+                                        </td>
+                                        ";
                                         echo "</tr>";
                                     }
                                     ?>

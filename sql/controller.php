@@ -1,5 +1,6 @@
 <?PHP
 include("../conn.php");
+session_start();
 
 // create
 if(isset($_POST["add"])){
@@ -83,6 +84,7 @@ if(isset($_POST["add"])){
         $checkIfExisting = $conn->query("SELECT * FROM collections WHERE or_number = '$or_number'");
         if(mysqli_num_rows($checkIfExisting) >= 1){
             //update
+            $conn->query("INSERT INTO audit_trail (user_id, ref_no, action) VALUES ('$_SESSION[user_id]', '$or_number', 'E')");
             $sql = "UPDATE collections SET or_date = '$date', semester_id = '$semesterId', cash = '$cash', gcash = '$gcash', gcash_refno = '$refNo' 
                     WHERE or_number = '$or_number'";
             $result = $conn->query($sql);
@@ -91,6 +93,7 @@ if(isset($_POST["add"])){
         }else{
             $studId = $conn->query("SELECT student_id FROM students WHERE student_no = '$studno'")->fetch_assoc()["student_id"];
             //insert
+            $conn->query("INSERT INTO audit_trail (user_id, ref_no, action) VALUES ('$_SESSION[user_id]', '$or_number', 'A')");
             $sql = "INSERT INTO collections (or_number, or_date, student_id, semester_id, cash, gcash, gcash_refno) 
                     VALUES ('$or_number', '$date', '$studId', '$semesterId', '$cash', '$gcash', '$refNo')";
             $result = $conn->query($sql);
@@ -214,6 +217,9 @@ if(isset($_POST["delete"])){
     }else if($table == "subjects"){
         $where = "subject_id";
         $header = "location:../admin/subject.php?success=3";
+    }else if($table == "collections"){
+        $where = "collection_id";
+        $header = "location:../admin/collection.php?success=3";
     }
     //check if student, if enroll
     if($table == "students"){
@@ -259,7 +265,12 @@ if(isset($_POST["delete"])){
             exit;
         }
     }
-    $sql = "DELETE FROM $table WHERE $where = $id";
+    //check if subject, if use in student_subject
+    if($table == "collections"){
+        $refNo = $conn->query("SELECT or_number FROM collections WHERE collection_id = $id")->fetch_assoc()["or_number"];
+        $conn->query("INSERT INTO audit_trail (user_id, ref_no, action) VALUES ('$_SESSION[user_id]', '$refNo', 'D')");
+    }
+    $sql = "DELETE FROM $table WHERE $where=$id";
     $result = $conn->query($sql);
     $conn->query("DELETE FROM users WHERE user = '$_POST[studno]' AND role = 'Student'");
     header($header);
