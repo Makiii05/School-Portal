@@ -272,10 +272,11 @@ require("../components/head.php");
             const result = []
             const error = document.getElementById(`${gender}_error`)
 
-            for (let i = 0; i < text.length; i+=4) {
-                grade = text.slice(i,i+4)
+            grades = text.replace(/\r\n/g, "").trim().split(" ")
+            
+            for (let grade of grades) {
+                console.log(grade.length)
                 if (grade.length != 4) {
-                    console.log("break")
                     error.innerText = "Atleast one field has invalid value."
                     return;
                 }
@@ -284,18 +285,13 @@ require("../components/head.php");
 
             if (result.length != rows) {
                 error.innerText = "Number of row does not match the list."
-                console.log("break")
                 return;
             }
             
             for (let i = 0; i < selects.length; i++) {
                 selects[i].value = result[i]
             }
-
-            console.log(selects)
-            console.log(rows)
-            console.log(text)
-            console.log(result)
+            error.innerText = ""
         }
 
         function pasteFemale() {
